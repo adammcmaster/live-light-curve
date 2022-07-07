@@ -4,14 +4,13 @@ import time
 
 
 def read_flux():
+    flux = 0
     while True:
         with serial.Serial(
             "COM5", 9600, xonxoff=True, write_timeout=0.1, timeout=0.1
         ) as ser:
-            flux = 0
             next_write = datetime.datetime.now()
             last_read = datetime.datetime.now()
-
             while True:
                 if last_read < datetime.datetime.now() - datetime.timedelta(seconds=5):
                     print(datetime.datetime.now(), "Resetting connection...")
