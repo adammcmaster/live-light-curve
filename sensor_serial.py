@@ -1,35 +1,47 @@
+import datetime
 import serial
 import time
 
 
 def read_flux():
-    with serial.Serial("COM5", 9600, xonxoff=True, write_timeout=1, timeout=1) as ser:
-        # ser.write(b" EEE")
-        # time.sleep(5)
-        # ser.write(b" O")
-        # time.sleep(5)
-        # ser.write(b" K" + (1).to_bytes(1, byteorder="big"))
-        flux = 0
-        while True:
-            ser.write(b"  ")
-            # ser.read_until(expected=(2).to_bytes(1, "big"))
-            b = ser.read_until(expected=(3).to_bytes(1, "big"))
-            b = list(b)
-            if len(b) != 4:
-                print("Fail", b)
-                continue
-            high, low = b[1:3]
-            hundred = high & 8
-            denary = high & 7
-            digit = low >> 3
-            decimal = low & 7
-            print(
-                hundred,
-                denary,
-                digit,
-                decimal,
-                hundred * 100 + denary * 10 + denary + decimal / 10.0,
-            )
+    while True:
+        with serial.Serial(
+            "COM5", 9600, xonxoff=True, write_timeout=0.1, timeout=0.1
+        ) as ser:
+            flux = 0
+            next_write = datetime.datetime.now()
+            last_read = datetime.datetime.now()
 
+            while True:
+                if last_read < datetime.datetime.now() - datetime.timedelta(seconds=5):
+                    print(datetime.datetime.now(), "Resetting connection...")
+                    break
+                if datetime.datetime.now() >= next_write:
+                    print(datetime.datetime.now(), "Writing")
+                    written = ser.write(b"  ")
+                    next_write = datetime.datetime.now() + datetime.timedelta(
+                        seconds=0.2
+                    )
+                    if written != 2:
+                        print(datetime.datetime.now(), "Write failed")
 
-read_flux()
+                b = ser.read_until(size=5)
+
+                b = list(b)
+                if len(b) < 4:
+                    if len(b) > 0:
+                        print("failed", b)
+                    yield flux
+                    continue
+                high, low = b[2:4]
+                # Zero out the first three bits; not quite right as the reading might be negative, but good enough
+                high = high & 31
+                hundred = high >> 4
+                denary = high & 15
+                digit = low >> 4
+                decimal = low & 15
+                flux = hundred * 100 + denary * 10 + digit + decimal / 10.0
+                status = b[1]
+                last_read = datetime.datetime.now()
+                print(datetime.datetime.now(), "Read succeeded, flux =", flux)
+                yield flux
