@@ -8,7 +8,7 @@ import matplotlib.animation as animation
 
 from lightcurves import LightcurveGenerator
 
-DISPLAY_DURATION = 1000
+DISPLAY_DURATION = 2000
 
 
 fig, ax = plt.subplots()
