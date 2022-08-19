@@ -22,16 +22,19 @@ MAX_BRIGHTNESS = 0.9
 
 class LightcurveGenerator(object):
     ROTATOR = (
+        "Rotator",
         (1.5, 0.3),
         (1.5, 0.7),
     )
     EXOPLANET = (
+        "Exoplanet",
         (1, 1),
         (0.8, 0.5),
         (0.3, 0.5),
         (0.8, 1),
     )
     LENSING = (
+        "Lensing",
         (1, 0),
         (0.6, 1),
         (0.6, 0),
@@ -72,15 +75,19 @@ class LightcurveGenerator(object):
         lensing_button.when_pressed = lambda: self.guess(self.LENSING)
 
     def shuffle(self):
-        self.lc_type = random.choice((self.ROTATOR, self.EXOPLANET, self.LENSING))
+        lc_type = random.choice((self.ROTATOR, self.EXOPLANET, self.LENSING))
+        print("Selected", self.lc_type[0])
         self.reset_flag = True
 
     def guess(self, lc_type):
+        print('Guessed', lc_type[0])
         if lc_type == self.lc_type:
+            print('Correct guess')
             green_led.on()
             time.sleep(10)
             green_led.off()
         else:
+            print('Incorrect guess')
             red_led.on()
             time.sleep(10)
             red_led.off()
@@ -116,7 +123,7 @@ class LightcurveGenerator(object):
 
     def repeat(self):
         while True:
-            for duration, target in self.lc_type:
+            for duration, target in self.lc_type[1:]:
                 if self.reset_flag:
                     self.reset_flag = False
                     break
