@@ -1,7 +1,16 @@
 import math
 import random
+import time
 
-import led
+from inputoutput import (
+    main_led,
+    green_led,
+    red_led,
+    exoplanet_button,
+    rotator_button,
+    lensing_button,
+    shuffle_button,
+)
 
 
 FPS = 25
@@ -37,14 +46,17 @@ class LightcurveGenerator(object):
 
     def __init__(
         self,
-        lc_type,
+        lc_type=None,
         init_value=0,
         fps=25,
         timescale=10,
         min_brightness=0.1,
         max_brightness=1.0,
     ):
-        self.lc_type = lc_type
+        if lc_type is None:
+            self.shuffle()
+        else:
+            self.lc_type = lc_type
         self.fps = fps
         self.delay = 1 / fps
         self.timescale = timescale
@@ -52,6 +64,26 @@ class LightcurveGenerator(object):
         self.min_brightness = min_brightness
         self.value = init_value
         self.init_value = init_value
+        self.reset_flag = False
+
+        shuffle_button.when_pressed = self.shuffle
+        exoplanet_button.when_pressed = lambda: self.guess(self.EXOPLANET)
+        rotator_button.when_pressed = lambda: self.guess(self.ROTATOR)
+        lensing_button.when_pressed = lambda: self.guess(self.LENSING)
+
+    def shuffle(self):
+        self.lc_type = random.choice((self.ROTATOR, self.EXOPLANET, self.LENSING))
+        self.reset_flag = True
+
+    def guess(self, lc_type):
+        if lc_type == self.lc_type:
+            green_led.on()
+            time.sleep(10)
+            green_led.off()
+        else:
+            red_led.on()
+            time.sleep(10)
+            red_led.off()
 
     def fade_curve(self, dur, target):
         if target > self.max_brightness:
@@ -75,20 +107,23 @@ class LightcurveGenerator(object):
 
         for x in range(num_frames):
             new_val = self.value + (delta * sigmoid(SIG_MIN + (x * step_size)))
-            led.main_led.value = new_val
+            main_led.value = new_val
             yield new_val
 
         self.value = target
-        led.main_led.value = self.value
+        main_led.value = self.value
         yield self.value
 
-    def repeat(self, num_repeats=5):
-        for i in range(num_repeats):
+    def repeat(self):
+        while True:
             for duration, target in self.lc_type:
+                if self.reset_flag:
+                    self.reset_flag = False
+                    break
                 for val in self.fade_curve(duration, target):
-                    led.main_led.value = val
+                    main_led.value = val
                     yield val
 
         for val in self.fade_curve(1, self.init_value):
-            led.main_led.value = val
+            main_led.value = val
             yield val
