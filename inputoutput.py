@@ -6,7 +6,7 @@ except ImportError:
     HAS_GPIO = False
 
 
-MAIN_LED_GPIO = 12
+MAIN_LED_GPIO = 13
 GREEN_LED_GPIO = 5
 RED_LED_GPIO = 6
 
