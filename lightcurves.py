@@ -83,14 +83,10 @@ class LightcurveGenerator(object):
         print('Guessed', lc_type[0])
         if lc_type == self.lc_type:
             print('Correct guess')
-            green_led.on()
-            time.sleep(10)
-            green_led.off()
+            green_led.blink(on_time=10, n=1)
         else:
             print('Incorrect guess')
-            red_led.on()
-            time.sleep(10)
-            red_led.off()
+            red_led.blink(on_time=10, n=1)
 
     def fade_curve(self, dur, target):
         if target > self.max_brightness:
