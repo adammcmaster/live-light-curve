@@ -85,7 +85,7 @@ class LightcurveGenerator(object):
         if target > self.max_brightness:
             target = self.max_brightness
         if target < self.min_brightness:
-            taregt = self.min_brightness
+            target = self.min_brightness
 
         delta = target - self.value
 
