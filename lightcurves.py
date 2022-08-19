@@ -1,6 +1,8 @@
 import math
 import random
 
+import led
+
 
 FPS = 25
 DELAY = 1 / FPS
@@ -72,16 +74,21 @@ class LightcurveGenerator(object):
             return 1 / (1 + math.exp(-x))
 
         for x in range(num_frames):
-            yield self.value + (delta * sigmoid(SIG_MIN + (x * step_size)))
+            new_val = self.value + (delta * sigmoid(SIG_MIN + (x * step_size)))
+            led.main_led.value = new_val
+            yield new_val
 
         self.value = target
+        led.main_led.value = self.value
         yield self.value
 
     def repeat(self, num_repeats=5):
         for i in range(num_repeats):
             for duration, target in self.lc_type:
                 for val in self.fade_curve(duration, target):
+                    led.main_led.value = val
                     yield val
 
         for val in self.fade_curve(1, self.init_value):
+            led.main_led.value = val
             yield val

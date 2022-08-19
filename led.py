@@ -1,66 +1,27 @@
-#!/usr/bin/python3
+try:
+    import gpiozero
 
-import gpiozero
-import time
-import itertools
-import random
-
-
-FPS = 25
-DELAY = 1 / FPS
-TIMESCALE = 10
-MIN_BRIGHTNESS = 0.1
-MAX_BRIGHTNESS = 1.0
-REPEATS = 3
-
-led = gpiozero.PWMLED(12)
-
-lightcurves = {
-    'pulsator': (
-        (0, 0),
-        (0.4, 1),
-        (1.0, 0),
-        (0.2, 0),
-    ),
-    'eclipsing': (
-        (0, 1),
-        (0.4, 1),
-        (0.05, 0.5),
-        (0.3, 0.5),
-        (0.05, 1),
-        (0.4, 1),
-        (0.05, 0.1),
-        (0.3, 0.1),
-        (0.05, 1),
-    ),
-    'lensing': (
-        (0, 0),
-        (0.6, 0.9),
-        (0.7, 0),
-        (0.2, 0),
-    ),
-}
+    HAS_GPIO = True
+except ImportError:
+    HAS_GPIO = False
 
 
-def fade(dur, target):
-    num_frames = int(dur * TIMESCALE * FPS)
-    if num_frames == 0:
-        num_frames = 1
-    step_size = (target - led.value) / num_frames
-    for i in range(num_frames):
-        new_value = led.value + step_size
-        if new_value < MIN_BRIGHTNESS:
-            new_value = MIN_BRIGHTNESS
-        if new_value > MAX_BRIGHTNESS:
-            new_value = MAX_BRIGHTNESS
-        led.value = new_value
-        time.sleep(DELAY)
+MAIN_LED_GPIO = 13
+GREEN_LED_GPIO = 5
+RED_LED_GPIO = 6
 
 
-led.value = MIN_BRIGHTNESS
+class DummyGPIO(object):
+    def on(self):
+        return
 
-for name, lightcurve in lightcurves.items():
-    print(name)
-    for i in range(REPEATS):
-        for duration, target in lightcurve:
-            fade(duration, target)
+    def off(self):
+        return
+
+
+if HAS_GPIO:
+    main_led = gpiozero.PWMLED(MAIN_LED_GPIO)
+    green_led = gpiozero.LED(GREEN_LED_GPIO)
+    red_led = gpiozero.LED(RED_LED_GPIO)
+else:
+    main_led = green_led = red_led = DummyGPIO()
