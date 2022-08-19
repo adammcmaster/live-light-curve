@@ -40,13 +40,6 @@ class LightcurveGenerator(object):
         (0.6, 0),
     )
 
-    @classmethod
-    def random(cls):
-        while True:
-            gen = cls(random.choice((cls.ROTATOR, cls.EXOPLANET, cls.LENSING)))
-            for val in gen.repeat():
-                yield val
-
     def __init__(
         self,
         lc_type=None,
