@@ -18,6 +18,7 @@ DELAY = 1 / FPS
 TIMESCALE = 10
 MIN_BRIGHTNESS = 0.1
 MAX_BRIGHTNESS = 0.9
+GUESS_BLINK_DURATION = 5
 
 
 class LightcurveGenerator(object):
@@ -76,10 +77,10 @@ class LightcurveGenerator(object):
         print('Guessed', lc_type[0])
         if lc_type == self.lc_type:
             print('Correct guess')
-            green_led.blink(on_time=10, n=1)
+            green_led.blink(on_time=GUESS_BLINK_DURATION, n=1)
         else:
             print('Incorrect guess')
-            red_led.blink(on_time=10, n=1)
+            red_led.blink(on_time=GUESS_BLINK_DURATION, n=1)
 
     def fade_curve(self, dur, target):
         if target > self.max_brightness:
