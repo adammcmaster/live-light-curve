@@ -17,7 +17,7 @@ class LightcurveGenerator(object):
     ROTATOR = (
         "Rotator",
         (2, 0),
-        (2, 0),
+        (2, 1),
     )
     EXOPLANET = (
         "Exoplanet",
