@@ -16,21 +16,21 @@ from inputoutput import (
 class LightcurveGenerator(object):
     ROTATOR = (
         "Rotator",
-        (1.5, 0.3),
-        (1.5, 0.7),
+        (2, 0),
+        (2, 0),
     )
     EXOPLANET = (
         "Exoplanet",
-        (1, 1),
-        (0.8, 0.5),
-        (0.3, 0.5),
-        (0.8, 1),
+        (5, 1),
+        (2, 0),
+        (3, 0),
+        (2, 1),
     )
     LENSING = (
         "Lensing",
-        (1, 0),
-        (0.6, 1),
-        (0.6, 0),
+        (5, 0),
+        (2, 1),
+        (2, 0),
     )
 
     def __init__(
@@ -38,7 +38,7 @@ class LightcurveGenerator(object):
         lc_type=None,
         init_value=0,
         fps=25,
-        timescale=10,
+        timescale=1,
         min_brightness=0.1,
         max_brightness=1.0,
         guess_blink_duration=5,
