@@ -13,14 +13,6 @@ from inputoutput import (
 )
 
 
-FPS = 25
-DELAY = 1 / FPS
-TIMESCALE = 10
-MIN_BRIGHTNESS = 0.1
-MAX_BRIGHTNESS = 0.9
-GUESS_BLINK_DURATION = 5
-
-
 class LightcurveGenerator(object):
     ROTATOR = (
         "Rotator",
@@ -49,6 +41,7 @@ class LightcurveGenerator(object):
         timescale=10,
         min_brightness=0.1,
         max_brightness=1.0,
+        guess_blink_duration=5,
     ):
         if lc_type is None:
             self.shuffle()
@@ -61,6 +54,7 @@ class LightcurveGenerator(object):
         self.min_brightness = min_brightness
         self.value = init_value
         self.init_value = init_value
+        self.guess_blink_duration = guess_blink_duration
         self.reset_flag = False
 
         shuffle_button.when_pressed = self.shuffle
@@ -77,10 +71,10 @@ class LightcurveGenerator(object):
         print('Guessed', lc_type[0])
         if lc_type == self.lc_type:
             print('Correct guess')
-            green_led.blink(on_time=GUESS_BLINK_DURATION, n=1)
+            green_led.blink(on_time=self.guess_blink_duration, n=1)
         else:
             print('Incorrect guess')
-            red_led.blink(on_time=GUESS_BLINK_DURATION, n=1)
+            red_led.blink(on_time=self.guess_blink_duration, n=1)
 
     def fade_curve(self, dur, target):
         if target > self.max_brightness:
