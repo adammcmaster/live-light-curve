@@ -34,6 +34,6 @@ def run(newflux):
 
 
 ani = animation.FuncAnimation(
-    fig, run, LightcurveGenerator.random(), interval=0.01, init_func=init
+    fig, run, LightcurveGenerator().repeat(), interval=40, init_func=init
 )
 plt.show()

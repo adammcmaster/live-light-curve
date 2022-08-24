@@ -13,48 +13,35 @@ from inputoutput import (
 )
 
 
-FPS = 25
-DELAY = 1 / FPS
-TIMESCALE = 10
-MIN_BRIGHTNESS = 0.1
-MAX_BRIGHTNESS = 0.9
-
-
 class LightcurveGenerator(object):
     ROTATOR = (
         "Rotator",
-        (1.5, 0.3),
-        (1.5, 0.7),
+        (2, 0),
+        (2, 1),
     )
     EXOPLANET = (
         "Exoplanet",
-        (1, 1),
-        (0.8, 0.5),
-        (0.3, 0.5),
-        (0.8, 1),
+        (5, 1),
+        (2, 0),
+        (3, 0),
+        (2, 1),
     )
     LENSING = (
         "Lensing",
-        (1, 0),
-        (0.6, 1),
-        (0.6, 0),
+        (5, 0),
+        (2, 1),
+        (2, 0),
     )
-
-    @classmethod
-    def random(cls):
-        while True:
-            gen = cls(random.choice((cls.ROTATOR, cls.EXOPLANET, cls.LENSING)))
-            for val in gen.repeat():
-                yield val
 
     def __init__(
         self,
         lc_type=None,
         init_value=0,
         fps=25,
-        timescale=10,
+        timescale=1,
         min_brightness=0.1,
         max_brightness=1.0,
+        guess_blink_duration=5,
     ):
         if lc_type is None:
             self.shuffle()
@@ -67,6 +54,7 @@ class LightcurveGenerator(object):
         self.min_brightness = min_brightness
         self.value = init_value
         self.init_value = init_value
+        self.guess_blink_duration = guess_blink_duration
         self.reset_flag = False
 
         shuffle_button.when_pressed = self.shuffle
@@ -75,7 +63,7 @@ class LightcurveGenerator(object):
         lensing_button.when_pressed = lambda: self.guess(self.LENSING)
 
     def shuffle(self):
-        lc_type = random.choice((self.ROTATOR, self.EXOPLANET, self.LENSING))
+        self.lc_type = random.choice((self.ROTATOR, self.EXOPLANET, self.LENSING))
         print("Selected", self.lc_type[0])
         self.reset_flag = True
 
@@ -83,20 +71,16 @@ class LightcurveGenerator(object):
         print('Guessed', lc_type[0])
         if lc_type == self.lc_type:
             print('Correct guess')
-            green_led.on()
-            time.sleep(10)
-            green_led.off()
+            green_led.blink(on_time=self.guess_blink_duration, n=1)
         else:
             print('Incorrect guess')
-            red_led.on()
-            time.sleep(10)
-            red_led.off()
+            red_led.blink(on_time=self.guess_blink_duration, n=1)
 
     def fade_curve(self, dur, target):
         if target > self.max_brightness:
             target = self.max_brightness
         if target < self.min_brightness:
-            taregt = self.min_brightness
+            target = self.min_brightness
 
         delta = target - self.value
 
@@ -128,6 +112,8 @@ class LightcurveGenerator(object):
                     self.reset_flag = False
                     break
                 for val in self.fade_curve(duration, target):
+                    if self.reset_flag:
+                        break
                     main_led.value = val
                     yield val
 
