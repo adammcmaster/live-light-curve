@@ -1,0 +1,4 @@
+gpiozero
+rpi-gpio
+matplotlib
+pyqt5
