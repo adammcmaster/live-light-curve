@@ -63,7 +63,13 @@ class LightcurveGenerator(object):
         lensing_button.when_pressed = lambda: self.guess(self.LENSING)
 
     def shuffle(self):
-        self.lc_type = random.choice((self.ROTATOR, self.EXOPLANET, self.LENSING))
+        self.lc_type = random.choice(
+            (
+                lc_type
+                for lc_type in (self.ROTATOR, self.EXOPLANET, self.LENSING)
+                if lc_type != self.lc_type
+            )
+        )
         print("Selected", self.lc_type[0])
         self.reset_flag = True
         green_led.off()
