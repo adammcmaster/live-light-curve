@@ -43,10 +43,10 @@ class LightcurveGenerator(object):
         max_brightness=1.0,
         guess_blink_duration=5,
     ):
-        if lc_type is None:
+        self.lc_type = lc_type
+        if self.lc_type is None:
             self.shuffle()
-        else:
-            self.lc_type = lc_type
+
         self.fps = fps
         self.delay = 1 / fps
         self.timescale = timescale
