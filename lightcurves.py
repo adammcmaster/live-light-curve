@@ -72,7 +72,7 @@ class LightcurveGenerator(object):
         self.button_sem = False
 
     def shuffle(self):
-        if not self.button_sem:
+        if self.button_sem:
             return
         self.button_sem = True
         green_led.off()
@@ -90,7 +90,7 @@ class LightcurveGenerator(object):
         self.reset_flag = True
 
     def guess(self, lc_type):
-        if not self.button_sem:
+        if self.button_sem:
             return
         self.button_sem = True
         print("Guessed", lc_type[0])
