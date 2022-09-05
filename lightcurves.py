@@ -73,6 +73,7 @@ class LightcurveGenerator(object):
 
     def shuffle(self):
         if self.button_sem:
+            print("Skipping duplicate press")
             return
         self.button_sem = True
         green_led.off()
@@ -91,6 +92,7 @@ class LightcurveGenerator(object):
 
     def guess(self, lc_type):
         if self.button_sem:
+            print("Skipping duplicate press")
             return
         self.button_sem = True
         print("Guessed", lc_type[0])
