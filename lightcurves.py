@@ -66,14 +66,18 @@ class LightcurveGenerator(object):
         self.lc_type = random.choice((self.ROTATOR, self.EXOPLANET, self.LENSING))
         print("Selected", self.lc_type[0])
         self.reset_flag = True
+        green_led.off()
+        red_led.off()
 
     def guess(self, lc_type):
-        print('Guessed', lc_type[0])
+        print("Guessed", lc_type[0])
         if lc_type == self.lc_type:
-            print('Correct guess')
+            print("Correct guess")
+            red_led.off()
             green_led.blink(on_time=self.guess_blink_duration, n=1)
         else:
-            print('Incorrect guess')
+            print("Incorrect guess")
+            green_led.off()
             red_led.blink(on_time=self.guess_blink_duration, n=1)
 
     def fade_curve(self, dur, target):
