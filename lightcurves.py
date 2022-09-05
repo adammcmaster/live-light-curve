@@ -43,6 +43,7 @@ class LightcurveGenerator(object):
         max_brightness=1.0,
         guess_blink_duration=5,
     ):
+        self.button_sem = False
         self.lc_type = lc_type
         if self.lc_type is None:
             self.shuffle()
@@ -56,7 +57,6 @@ class LightcurveGenerator(object):
         self.init_value = init_value
         self.guess_blink_duration = guess_blink_duration
         self.reset_flag = False
-        self.button_sem = False
 
         shuffle_button.when_pressed = self.shuffle
         exoplanet_button.when_pressed = lambda: self.guess(self.EXOPLANET)
