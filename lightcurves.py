@@ -56,13 +56,29 @@ class LightcurveGenerator(object):
         self.init_value = init_value
         self.guess_blink_duration = guess_blink_duration
         self.reset_flag = False
+        self.button_sem = False
 
         shuffle_button.when_pressed = self.shuffle
         exoplanet_button.when_pressed = lambda: self.guess(self.EXOPLANET)
         rotator_button.when_pressed = lambda: self.guess(self.ROTATOR)
         lensing_button.when_pressed = lambda: self.guess(self.LENSING)
 
+        shuffle_button.when_released = self.clear_button_sem
+        exoplanet_button.when_released = lambda: self.clear_button_sem
+        rotator_button.when_released = lambda: self.clear_button_sem
+        lensing_button.when_released = lambda: self.clear_button_sem
+
+    def clear_button_sem(self):
+        self.button_sem = False
+
     def shuffle(self):
+        if not self.button_sem:
+            return
+        self.button_sem = True
+        green_led.off()
+        red_led.off()
+        green_led.blink(on_time=1, n=3)
+        red_led.blink(on_time=1, n=3)
         self.lc_type = random.choice(
             [
                 lc_type
@@ -72,10 +88,11 @@ class LightcurveGenerator(object):
         )
         print("Selected", self.lc_type[0])
         self.reset_flag = True
-        green_led.off()
-        red_led.off()
 
     def guess(self, lc_type):
+        if not self.button_sem:
+            return
+        self.button_sem = True
         print("Guessed", lc_type[0])
         if lc_type == self.lc_type:
             print("Correct guess")
