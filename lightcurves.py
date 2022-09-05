@@ -77,8 +77,8 @@ class LightcurveGenerator(object):
         self.button_sem = True
         green_led.off()
         red_led.off()
-        green_led.blink(on_time=1, n=3)
-        red_led.blink(on_time=1, n=3)
+        green_led.blink(on_time=0.25, n=3)
+        red_led.blink(on_time=0.25, n=3)
         self.lc_type = random.choice(
             [
                 lc_type
