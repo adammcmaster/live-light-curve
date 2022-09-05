@@ -47,6 +47,7 @@ class LightcurveGenerator(object):
         self.lc_type = lc_type
         if self.lc_type is None:
             self.shuffle()
+            self.clear_button_sem()
 
         self.fps = fps
         self.delay = 1 / fps
