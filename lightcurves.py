@@ -65,9 +65,9 @@ class LightcurveGenerator(object):
         lensing_button.when_pressed = lambda: self.guess(self.LENSING)
 
         shuffle_button.when_released = self.clear_button_sem
-        exoplanet_button.when_released = lambda: self.clear_button_sem
-        rotator_button.when_released = lambda: self.clear_button_sem
-        lensing_button.when_released = lambda: self.clear_button_sem
+        exoplanet_button.when_released = self.clear_button_sem
+        rotator_button.when_released = self.clear_button_sem
+        lensing_button.when_released = self.clear_button_sem
 
     def clear_button_sem(self):
         print("Clearning button_sem")
