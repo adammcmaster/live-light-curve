@@ -23,6 +23,9 @@ class DummyGPIO(object):
     def off(self):
         return
 
+    def blink(self, *args, **kwargs):
+        return
+
 
 if HAS_GPIO:
     main_led = gpiozero.PWMLED(MAIN_LED_GPIO)
