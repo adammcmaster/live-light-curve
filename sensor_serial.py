@@ -12,7 +12,7 @@ def read_flux():
             next_write = datetime.datetime.now()
             last_read = datetime.datetime.now()
             while True:
-                if last_read < datetime.datetime.now() - datetime.timedelta(seconds=5):
+                if last_read < datetime.datetime.now() - datetime.timedelta(seconds=1):
                     print(datetime.datetime.now(), "Resetting connection...")
                     break
                 if datetime.datetime.now() >= next_write:

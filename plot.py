@@ -8,7 +8,7 @@ import matplotlib.animation as animation
 
 from sensor_serial import read_flux
 
-DISPLAY_DURATION = 300
+DISPLAY_DURATION = 500
 
 
 fig, ax = plt.subplots()
