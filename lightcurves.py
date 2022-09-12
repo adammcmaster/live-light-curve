@@ -28,16 +28,26 @@ def sinusoid(x, num_frames, delta, start):
     return 0.5 + math.sin(x * step_size) / 2
 
 
+def scale_full(x):
+    return x
+
+
+def scale_05(x):
+    return x * 0.5 + 0.5
+
+
 class LightcurveGenerator(object):
     ROTATOR = (
         "Rotator",
         sinusoid,
+        scale_05,
         (20, 0),
         (20, 1),
     )
     EXOPLANET = (
         "Exoplanet",
         sigmoid,
+        scale_05,
         (10, 1),
         (2, 0),
         (3, 0),
@@ -46,6 +56,7 @@ class LightcurveGenerator(object):
     LENSING = (
         "Lensing",
         sigmoid,
+        scale_full,
         (5, 0),
         (2, 1),
         (2, 0),
@@ -71,7 +82,7 @@ class LightcurveGenerator(object):
         self.timescale = timescale
         self.max_brightness = max_brightness
         self.min_brightness = min_brightness
-        self.value = self.lc_type[2][1]
+        self.value = self.lc_type[3][1]
         self.guess_blink_duration = guess_blink_duration
         self.reset_flag = False
 
@@ -140,13 +151,13 @@ class LightcurveGenerator(object):
         for x in range(num_frames):
             new_val = self.lc_type[1](x, num_frames, delta, self.value)
             main_led.value = new_val
-            yield new_val
+            yield self.lc_type[2](new_val)
 
         self.value = new_val
 
     def repeat(self):
         while True:
-            for duration, target in self.lc_type[2:]:
+            for duration, target in self.lc_type[3:]:
                 if self.reset_flag:
                     self.reset_flag = False
                     break
