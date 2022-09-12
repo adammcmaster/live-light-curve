@@ -54,7 +54,6 @@ class LightcurveGenerator(object):
     def __init__(
         self,
         lc_type=None,
-        init_value=0,
         fps=25,
         timescale=1,
         min_brightness=0.1,
@@ -72,8 +71,7 @@ class LightcurveGenerator(object):
         self.timescale = timescale
         self.max_brightness = max_brightness
         self.min_brightness = min_brightness
-        self.value = init_value
-        self.init_value = init_value
+        self.value = self.lc_type[2][1]
         self.guess_blink_duration = guess_blink_duration
         self.reset_flag = False
 
@@ -157,7 +155,3 @@ class LightcurveGenerator(object):
                         break
                     main_led.value = val
                     yield val
-
-        for val in self.fade_curve(1, self.init_value):
-            main_led.value = val
-            yield val
