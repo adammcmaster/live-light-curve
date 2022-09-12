@@ -19,7 +19,7 @@ xdata, ydata = list(range(DISPLAY_DURATION)), [0 for x in range(DISPLAY_DURATION
 
 
 def init():
-    ax.set_ylim(0, 1.2)
+    ax.set_ylim(-0.2, 1.2)
     ax.set_xlim(0, DISPLAY_DURATION)
     line.set_data(xdata, ydata)
     return (line,)

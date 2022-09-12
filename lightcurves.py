@@ -13,21 +13,39 @@ from inputoutput import (
 )
 
 
+def sigmoid(x, num_frames, delta, start):
+    SIG_MIN = -6
+    SIG_MAX = 6
+
+    step_size = (SIG_MAX - SIG_MIN) / num_frames
+    return start + (delta / (1 + math.exp(-(SIG_MIN + (x * step_size)))))
+
+
+def sinusoid(x, num_frames, delta, start):
+    SIN_MIN = 0
+    SIN_MAX = 2 * math.pi
+    step_size = (SIN_MAX - SIN_MIN) / num_frames
+    return 0.5 + math.sin(x * step_size) / 2
+
+
 class LightcurveGenerator(object):
     ROTATOR = (
         "Rotator",
-        (2, 0),
-        (2, 1),
+        sinusoid,
+        (20, 0),
+        (20, 1),
     )
     EXOPLANET = (
         "Exoplanet",
-        (5, 1),
+        sigmoid,
+        (10, 1),
         (2, 0),
         (3, 0),
         (2, 1),
     )
     LENSING = (
         "Lensing",
+        sigmoid,
         (5, 0),
         (2, 1),
         (2, 0),
@@ -119,26 +137,18 @@ class LightcurveGenerator(object):
         if num_frames == 0:
             num_frames = 1
 
-        SIG_MIN = -6
-        SIG_MAX = 6
-
-        step_size = (SIG_MAX - SIG_MIN) / num_frames
-
-        def sigmoid(x):
-            return 1 / (1 + math.exp(-x))
+        new_val = self.value
 
         for x in range(num_frames):
-            new_val = self.value + (delta * sigmoid(SIG_MIN + (x * step_size)))
+            new_val = self.lc_type[1](x, num_frames, delta, self.value)
             main_led.value = new_val
             yield new_val
 
-        self.value = target
-        main_led.value = self.value
-        yield self.value
+        self.value = new_val
 
     def repeat(self):
         while True:
-            for duration, target in self.lc_type[1:]:
+            for duration, target in self.lc_type[2:]:
                 if self.reset_flag:
                     self.reset_flag = False
                     break
