@@ -41,17 +41,17 @@ class LightcurveGenerator(object):
         "Rotator",
         sinusoid,
         scale_05,
-        (20, 0),
-        (20, 1),
+        (10, 0),
+        (10, 1),
     )
     EXOPLANET = (
         "Exoplanet",
         sigmoid,
         scale_05,
-        (10, 1),
+        (5, 1),
+        (1, 0),
         (2, 0),
-        (3, 0),
-        (2, 1),
+        (1, 1),
     )
     LENSING = (
         "Lensing",
