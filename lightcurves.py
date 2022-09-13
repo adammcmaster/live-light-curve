@@ -97,6 +97,7 @@ class LightcurveGenerator(object):
         lensing_button.when_released = self.clear_button_sem
 
     def clear_button_sem(self):
+        time.sleep(2)
         print("Clearning button_sem")
         self.button_sem = False
 
