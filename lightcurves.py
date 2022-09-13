@@ -67,7 +67,7 @@ class LightcurveGenerator(object):
         lc_type=None,
         fps=25,
         timescale=1,
-        min_brightness=0.1,
+        min_brightness=0.05,
         max_brightness=1.0,
         guess_blink_duration=5,
     ):
