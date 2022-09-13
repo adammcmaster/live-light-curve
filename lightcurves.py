@@ -164,5 +164,4 @@ class LightcurveGenerator(object):
                 for val in self.fade_curve(duration, target):
                     if self.reset_flag:
                         break
-                    main_led.value = val
                     yield val
